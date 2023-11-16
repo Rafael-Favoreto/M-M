@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+
+
+    <title>Document</title>
+</head>
+
+<body>        
+    <h1>Máximos e Mínimos</h1>
+    <div class="container">
+
+        <div class="content">
+            <h2>Problema da Caixa</h2>
+            <div id="lineplot"></div>
+            <py-script output="lineplot">
+            </py-script>
+
+            <div class="details">
+                <span>Encontre o maior volume possível em um quadrado dividido em quatro partes</span>
+                <button id="button">Inserir valor</button>
+                <h3 id="box-result"></h4>
+                <span id="box-1"></span>
+                <span id="box-2"></span>
+                <py-script>
+                import js
+                from pyodide.ffi import create_proxy
+                import numpy as np
+                
+                def input_name(events):
+                    x_values = np.linspace(0, 0.5, 100)
+                    
+                    v_values = volume(x_values)
+                    
+                    max_v = max(v_values)
+                    max_x = x_values[v_values.argmax()]
+
+                    user_x = float(input("Digite o valor de x para encontrar o volume correspondente:"))
+
+                    user_v = volume(user_x)
+
+                    text1 = f'O maior valor possível para V é {max_v} quando x é {max_x}'
+                    text2 = f'Para x = {user_x}, V é {user_v}'
+                    
+                    js.document.getElementById("box-result").innerText = 'Resultado'
+                    js.document.getElementById("box-1").innerText = text1
+                    js.document.getElementById("box-2").innerText = text2
+                
+                def volume(x):
+                    return x * (1 - 2*x)**2
+                
+
+                proxy = create_proxy(input_name)
+                js.document.getElementById("button").addEventListener("click", proxy)
+                </py-script>
+            </div>
+        </div>
+        <div class="content">
+            <h2>Jardim de área máxima</h2>
+            <div id="lineplot"></div>
+            <py-script output="lineplot">
+            </py-script>
+
+            <div class="details">
+                <span>Encontre a área máxima que um retângulo pode ter em um triângulo retângulo</span>
+                <button id="button-garden">Inserir valor</button>
+                <h3 id="garden-result"></h4>
+                <span id="garden"></span>
+                <py-script>
+                import js
+                from pyodide.ffi import create_proxy
+                import numpy as np
+
+                def area_retangulo(x):
+                    return -3/4 * x**2 + 6*x
+
+                def area_triangulo(x):
+                    return 0.5 * 6 * 8
+
+    
+                def inputFunction(events):
+                    x_user = float(input("Digite o valor de d(D,B) (entre 0 e 8): "))
+
+                    x_user = max(0, min(8, x_user))
+                
+                    area_retangulo_user = area_retangulo(x_user)
+                    area_triangulo_user = area_triangulo(x_user)
+                
+                    x_values = np.linspace(0, 8, 100)
+                
+                    y_retangulo = [area_retangulo(val) for val in x_values]
+                    text = f'O maior valor possível da Área do Retângulo para x = {x_user}: {area_retangulo_user}'
+
+                    js.document.getElementById("garden-result").innerText = 'Resultado'
+                    js.document.getElementById("garden").innerText = text
+
+                proxy = create_proxy(inputFunction)
+                js.document.getElementById("button-garden").addEventListener("click", proxy)
+                </py-script>
+            </div>
+        </div>
+        <div class="content">
+            <h2>Altura máxima do avião</h2>
+            <div id="lineplot"></div>
+            <py-script output="lineplot">
+            </py-script>
+
+            <div class="details">
+                <span>Encontre a altura máxima que um avião pode atingir ao realizar <br> uma manobra em formato de parábola.</span>
+                <button id="button-plane">Inserir valor</button>
+                <h3 id="plane-result"></h4>
+                <span id="plane-1"></span>
+                <span id="plane-2"></span>
+                <py-script>
+                import js
+                from pyodide.ffi import create_proxy
+                import numpy as np
+
+                def parabola(x):
+                    return -x**2 + 60*x
+
+    
+                def inputFunction(events):
+                    x_values = np.linspace(0, 60, 100)
+                    y_values = parabola(x_values)
+                    
+                    vertex_x = 30
+                    vertex_y = parabola(vertex_x)
+                    
+                    user_x = float(input("Digite um valor para x: "))
+                    user_y = parabola(user_x)
+                    
+                    text1 = f'Vértice ({vertex_x}, {vertex_y})'
+                    text2 = f'Ponto de Usuário ({user_x}, {user_y})'
+
+                    js.document.getElementById("plane-result").innerText = 'Resultado'
+                    js.document.getElementById("plane-1").innerText = text1
+                    js.document.getElementById("plane-2").innerText = text2
+
+                proxy = create_proxy(inputFunction)
+                js.document.getElementById("button-plane").addEventListener("click", proxy)
+                </py-script>
+            </div>
+        </div>
+    </div>
+    <py-config>
+        packages = ["matplotlib", "numpy"]
+        plugins = [ "https://pyscript.net/latest/plugins/python/py_tutor.py" ]
+    </py-config>
+</body>
+
+</html>
